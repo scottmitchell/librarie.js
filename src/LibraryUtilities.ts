@@ -19,6 +19,11 @@ export class TypeListNode {
     description: string = "";
     processed: boolean = false;
     weight: number = 0;
+    inputs: string = "";
+    inputTypes: string = "";
+    outputs: string = "";
+    smallIcon: string = "";
+    largeIcon: string = "";
 
     constructor(data: any) {
         this.fullyQualifiedName = data.fullyQualifiedName;
@@ -29,6 +34,11 @@ export class TypeListNode {
         this.parameters = data.parameters;
         this.description = data.description;
         this.weight = data.weight;
+        this.inputs = data.inputs;
+        this.inputTypes = data.inputTypes;
+        this.outputs = data.outputs;
+        this.smallIcon = data.smallIcon;
+        this.largeIcon = data.largeIcon;
     }
 }
 
@@ -93,6 +103,12 @@ export class ItemData {
     childItems: ItemData[] = [];
     pathToItem: ItemData[] = [];
     weight: number = 0;
+    inputs: string[] = [];
+    inputTypes: string[] = [];
+    outputs: string[] = [];
+    smallIcon: string = "";
+    largeIcon: string = "";
+    fullCategoryName: string = "";
 
     constructor(public text: string) {
         this.keywords.push(text ? text.toLowerCase() : text);
@@ -106,11 +122,14 @@ export class ItemData {
     }
 
     constructFromTypeListNode(typeListNode: TypeListNode) {
+        this.fullCategoryName = typeListNode.fullyQualifiedName;
         this.contextData = typeListNode.contextData;
         this.iconUrl = typeListNode.iconUrl;
         this.itemType = typeListNode.memberType;
         this.parameters = typeListNode.parameters;
         this.description = typeListNode.description;
+        this.smallIcon = typeListNode.smallIcon;
+        this.largeIcon = typeListNode.largeIcon;
         if (typeListNode.weight) {
             this.weight = typeListNode.weight;
         }
@@ -121,6 +140,21 @@ export class ItemData {
             this.keywords.push(keyword.toLowerCase().replace(/ /g, ''));
         });
         this.keywords.push(typeListNode.fullyQualifiedName.toLowerCase().replace(/ /g, ''));
+
+        let inputs = typeListNode.inputs.split(",");
+        inputs.forEach(input => {
+            this.inputs.push(input);
+        });
+
+        let inputTypes = typeListNode.inputTypes.split(",");
+        inputTypes.forEach(inputType => {
+            this.inputTypes.push(inputType);
+        });
+
+        let outputs = typeListNode.outputs.split(",");
+        outputs.forEach(output => {
+            this.outputs.push(output);
+        });
     }
 
     appendChild(childItem: ItemData) {
